@@ -1,0 +1,29 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: moodboard
+spec:
+  selector:
+    matchLabels:
+      app: moodboard
+  template:
+    metadata:
+      labels:
+        app: moodboard
+    spec:
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: moodboard-key
+      containers:
+      - name: moodboard
+        image: gcr.io/message-board-c2da6/moodboard:v1.2
+        ports:
+        - containerPort: 8080
+          name: moodboard
+        volumeMounts:
+        - name: google-cloud-key
+          mountPath: /var/secrets/google
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/key.json
